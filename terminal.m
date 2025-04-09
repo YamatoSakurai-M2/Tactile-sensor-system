@@ -127,7 +127,7 @@
 % -------------------------------------------------
 % --- シリアル通信ポート設定 ------------------
 if ~exist("s_slider", "var") || ~isvalid(s_slider)
-    s_slider = serialport("COM356", 9600);
+    s_slider = serialport("COM400", 9600);
     configureTerminator(s_slider, "CR/LF");
     disp("s_slider SETTING")
 end
