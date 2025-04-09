@@ -104,22 +104,70 @@
 %     end
 % end
 
-if ~exist("slider", "var") || ~isvalid(s)
-    slider = serialport("COM3", 9600);
-    configureTerminator(slider, "CR/LF");
+% if ~exist("slider", "var") || ~isvalid(s)
+%     slider = serialport("COM3", 9600);
+%     configureTerminator(slider, "CR/LF");
+%     disp("s SETTING")
+% end
+% 
+% writeline(slider, "run 31");
+% pause(2);
+% writeline(slider, "run 29");
+% pause(2);
+% writeline(slider, "run 31");
+% pause(2);
+% writeline(slider, "run 29");
+% pause(2);
+% writeline(slider, "run 31");
+% pause(2);
+% writeline(slider, "run 29");
+% pause(2);
+% writeline(slider, "run 31");
+
+% -------------------------------------------------
+% --- シリアル通信ポート設定 ------------------
+if ~exist("s_slider", "var") || ~isvalid(s_slider)
+    s_slider = serialport("COM356", 9600);
+    configureTerminator(s_slider, "CR/LF");
+    disp("s_slider SETTING")
+end
+if ~exist("s", "var") || ~isvalid(s)
+    s = serialport("COM3", 9600);
+    configureTerminator(s, "CR/LF");
     disp("s SETTING")
 end
 
-writeline(slider, "run 31");
-pause(2);
-writeline(slider, "run 29");
-pause(2);
-writeline(slider, "run 31");
-pause(2);
-writeline(slider, "run 29");
-pause(2);
-writeline(slider, "run 31");
-pause(2);
-writeline(slider, "run 29");
-pause(2);
-writeline(slider, "run 31");
+
+% Command(s, "MGO:A1750");
+writeline(s, "MGO:A1750")
+
+
+
+
+function ResponseCommand(s, command)
+    writeline(s, command)
+    pause(0.2)
+
+    if s.NumBytesAvailable > 0
+        response = readline(s);
+        disp(response);
+    else
+        disp("No Response");
+    end
+end
+
+function Command(s, command)
+    writeline(s, command)
+    while true
+        writeline(s, "Q:A2");
+        pause(0.02);
+        if s.NumBytesAvailable > 0
+            status = readline(s);
+            if contains(status, "K") || command == "JGO:A+"
+                break;
+            end
+        end
+    end
+end
+
+
